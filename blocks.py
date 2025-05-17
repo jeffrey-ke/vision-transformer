@@ -1,6 +1,39 @@
 import torch
 from torch import nn
-from torch.nn import Functional
+from torch.nn import Functional as F
+
+"""
+What are the best community implementations of
+these modules? Look them up, don't handroll 
+your own. i.e. does xformers do this better, 
+does Meta have their own implementation, 
+would I ever use a ViT from scratch or
+would I always use something like DINO?
+
+
+
+Measure of success: you train this on all of ImageNet and get all your pretty graphs
+Remember that a failure is more interesting than a 
+success here.
+
+"""
+
+
+class TransformerEncoder(nn.Module):
+    def __init__(self, ):
+        super().__init__()
+
+
+    # I like this workflow where I do the forward function
+    # first and then do __init__: basically, the important
+    # part is figuring out what this module does before
+    # I do the bookkeeping of making sure the object 
+    # actually has the members at run-time
+    def forward(self, tokens):
+
+
+
+
 
 class PositionalEmbedding(nn.Module):
     def __init__(self, embed_dim, ):
