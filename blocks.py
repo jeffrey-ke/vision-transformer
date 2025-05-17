@@ -45,4 +45,10 @@ class ViT(nn.Module):
         # permuted is shape B, num_patches, patch_dim
         projected_patches = self.input_proj(patches_permuted)
         projected_patches = torch.cat([cls_token, projected_patches], dim=1) 
+        patches_embedded = self.positional_embedding(projected_patches)
+        tokens = self.encoder(patches_embedded)
+        cls_tokens = tokens[:,0,:] #B, patch_dim
+        logits = self.cls_head(cls_tokens) #B, num_classes
+        return torch.argmax(logits, dim=-1) #B, 
+
 
