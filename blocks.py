@@ -30,7 +30,7 @@ class ViT(nn.Module):
         self.input_proj = nn.Linear(patch_dim**2 * num_channels, proj_dim)
         self.positional_embedding = PositionalEmbedding(embed_dim=proj_dim)
         self.encoder = TransformerEncoder(L=num_blocks, patch_dim=patch_dim)
-        self.cls_head = nn.Linear(proj_dim, num_classes)
+        self.cls_head = nn.Sequential([nn.Linear(proj_dim, proj_dim), nn.ReLU(), nn.Linear(proj_dim, num_classes)])
         self.cls_token = nn.Parameter(torch.randn(1, 1, self.patch_dim).expand(B, -1, -1))
 
     def forward(self, images_batched):
