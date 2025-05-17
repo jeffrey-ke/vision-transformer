@@ -2,6 +2,16 @@ import torch
 from torch import nn
 from torch.nn import Functional
 
+class PositionalEmbedding(nn.Module):
+    def __init__(self, embed_dim, ):
+        super().__init__()
+        self.embedding = nn.Embedding(len=embed_dim)
+
+    def forward(self, tokens):
+        # tokens will be shape B, S, dim
+        _,num_tokens,_ = tokens.shape
+        positions = self.embedding(torch.arange(num_tokens))
+        return tokens + positions
 
 class ViT(nn.Module):
     def __init__(self, num_blocks, proj_dim=1024, patch_dim=16, num_classes=10):
@@ -10,6 +20,7 @@ class ViT(nn.Module):
         proj_dim is the dimension the flattened patches are projected into
         patch_dim is the length of one side of a patch.
         """
+        super().__init__()
         ###### Bookkeeping
         num_channels = 3
         self.patch_dim = patch_dim
@@ -17,7 +28,7 @@ class ViT(nn.Module):
 
         ##### Modules
         self.input_proj = nn.Linear(patch_dim**2 * num_channels, proj_dim)
-        self.positional_embedding = PositionalEmbedding()
+        self.positional_embedding = PositionalEmbedding(embed_dim=proj_dim)
         self.encoder = TransformerEncoder(L=num_blocks, patch_dim=patch_dim)
         self.cls_head = nn.Linear(proj_dim, num_classes)
         self.cls_token = nn.Parameter(torch.randn(1, 1, self.patch_dim).expand(B, -1, -1))
