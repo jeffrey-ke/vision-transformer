@@ -20,6 +20,7 @@ class ViT(nn.Module):
         self.positional_embedding = PositionalEmbedding()
         self.encoder = TransformerEncoder(L=num_blocks, patch_dim=patch_dim)
         self.cls_head = nn.Linear(proj_dim, num_classes)
+        self.cls_token = nn.Parameter(torch.randn(1, 1, self.patch_dim).expand(B, -1, -1))
 
     def forward(self, images_batched):
         """
@@ -32,6 +33,5 @@ class ViT(nn.Module):
         patches_permuted = patches.permute(0, 2, 1)
         # permuted is shape B, num_patches, patch_dim
         projected_patches = self.input_proj(patches_permuted)
-        cls_token = nn.Parameter(torch.randn(1, 1, self.patch_dim).expand(B, -1, -1))
         projected_patches = torch.cat([cls_token, projected_patches], dim=1) 
 
